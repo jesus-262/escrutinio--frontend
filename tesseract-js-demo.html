@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <title>Tesseract-JS Demo</title>
+		<meta charset="UTF-8">
+		<meta name="description" content="A simple demonstration of Tesseract JS">
+		<meta name="keywords" content="Tesseract,OCR,JavaScript">
+		<meta name="author" content="Akshay Khale">
+    </head>
+    <body>
+        <label for="input_image">Choose an Image File:</label>
+        <input type="file" id="input_image" name="input_image"/>
+        <br />
+        <br />
+        <textarea id="image-text"></textarea>
+		<br/><br/>
+		<progress id="progressbar" min="0" max="1" value="0"/>
+    </body>
+	<script src='https://cdn.rawgit.com/naptha/tesseract.js/1.0.10/dist/tesseract.js'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            var input_image = document.getElementById('input_image');
+            input_image.addEventListener('change', handleInputChange);
+        });
+
+        function handleInputChange(event){
+            var input = event.target;
+            var file = input.files[0];
+            console.log(file);
+            Tesseract.recognize(file)
+                .progress(function(message){
+					document.getElementById('progressbar').value = message.progress;
+                    console.log(message);
+                })
+                .then(function(result){
+                    var contentArea = document.getElementById('image-text');
+					contentArea.innerHTML = result.text;
+                    console.log(result);
+                })
+                .catch(function(err){
+                    console.error(err);
+                });
+        }
+    </script>
+</html>
